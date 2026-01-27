@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: url('1.jpg') no-repeat center center;
+    background-size: cover;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    transition: background-image 1s ease-in-out;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    background-size: cover;
+    z-index: -1;
+}
+
+/* 移动端竖屏时，背景图旋转90度 */
+@media (max-width: 768px) and (orientation: portrait) {
+    body::before {
+        transform: rotate(90deg);
+        transform-origin: center center;
+        width: 100vh;
+        height: 100vw;
+        top: 50%;
+        left: 50%;
+        margin-left: -50vh;
+        margin-top: -50vw;
+    }
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* 中间跳动的文本 */
+.center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(24px, 8vw, 64px);
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                 0 0 40px rgba(255, 255, 255, 0.6);
+    z-index: 100;
+    white-space: nowrap;
+    display: flex;
+    -webkit-box-reflect: below 10px linear-gradient(transparent, transparent 40%, rgba(255, 255, 255, 0.3));
+    padding: 0 10px;
+}
+
+.center-text span {
+    display: inline-block;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.center-text span:nth-child(1) { animation-delay: 0s; }
+.center-text span:nth-child(2) { animation-delay: 0.0625s; }
+.center-text span:nth-child(3) { animation-delay: 0.125s; }
+.center-text span:nth-child(4) { animation-delay: 0.1875s; }
+.center-text span:nth-child(5) { animation-delay: 0.25s; }
+.center-text span:nth-child(6) { animation-delay: 0.3125s; }
+.center-text span:nth-child(7) { animation-delay: 0.375s; }
+.center-text span:nth-child(8) { animation-delay: 0.4375s; }
+.center-text span:nth-child(9) { animation-delay: 0.5s; }
+.center-text span:nth-child(10) { animation-delay: 0.5625s; }
+.center-text span:nth-child(11) { animation-delay: 0.625s; }
+.center-text span:nth-child(12) { animation-delay: 0.6875s; }
+.center-text span:nth-child(13) { animation-delay: 0.75s; }
+.center-text span:nth-child(14) { animation-delay: 0.8125s; }
+.center-text span:nth-child(15) { animation-delay: 0.875s; }
+.center-text span:nth-child(16) { animation-delay: 0.9375s; }
+
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(clamp(-10px, -3vw, -20px));
+    }
+}
+
+/* 弹幕容器 */
+.danmaku-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 弹幕项 */
+.danmaku-item {
+    position: absolute;
+    font-weight: bold;
+    white-space: nowrap;
+    animation: scroll-left 20s linear infinite;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    will-change: transform;
+}
+
+/* 用户发送的弹幕 */
+.user-danmaku {
+    border: 2px solid #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .center-text {
+        font-size: clamp(20px, 6vw, 48px);
+    }
+    
+    .danmaku-item {
+        font-size: clamp(14px, 4vw, 24px) !important;
+    }
+    
+    .user-danmaku {
+        padding: 2px 6px;
+        border-width: 1px;
+    }
+}
+
+@keyframes scroll-left {
+    0% {
+        left: 100%;
+    }
+    100% {
+        left: -100%;
+    }
+}
