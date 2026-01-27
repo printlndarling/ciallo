@@ -75,13 +75,15 @@ function initCenterText() {
 // 点击播放音频并发送弹幕
 let lastClickTime = 0;
 const clickThrottle = 150; // 节流时间150ms
+let lastDanmakuTime = 0;
+const danmakuThrottle = 500; // 弹幕节流500ms，避免太频繁
 let audioPool = [];
 const maxAudioPool = 5; // 最多同时播放5个音频
 
 // 初始化音频池
 function initAudioPool() {
     for (let i = 0; i < maxAudioPool; i++) {
-        const audio = new Audio('ciallo.aac');
+        const audio = new Audio('assets/audio/ciallo.aac');
         audio.preload = 'auto';
         audioPool.push({ audio, playing: false });
     }
@@ -99,32 +101,34 @@ function getAvailableAudio() {
 document.body.addEventListener('click', () => {
     const now = Date.now();
     
-    // 节流控制，防止频繁点击卡顿
-    if (now - lastClickTime < clickThrottle) {
-        return;
+    // 音频节流控制
+    if (now - lastClickTime >= clickThrottle) {
+        lastClickTime = now;
+        
+        // 增加点击计数
+        clickCount++;
+        
+        // 检查是否触发特殊音频
+        checkSpecialAudio();
+        
+        // 使用音频池播放
+        const audioItem = getAvailableAudio();
+        audioItem.playing = true;
+        audioItem.audio.currentTime = 0;
+        audioItem.audio.play().catch(err => {
+            console.log('音频播放失败:', err);
+        }).finally(() => {
+            setTimeout(() => {
+                audioItem.playing = false;
+            }, 1000);
+        });
     }
-    lastClickTime = now;
     
-    // 增加点击计数
-    clickCount++;
-    
-    // 检查是否触发特殊音频
-    checkSpecialAudio();
-    
-    // 使用音频池播放
-    const audioItem = getAvailableAudio();
-    audioItem.playing = true;
-    audioItem.audio.currentTime = 0;
-    audioItem.audio.play().catch(err => {
-        console.log('音频播放失败:', err);
-    }).finally(() => {
-        setTimeout(() => {
-            audioItem.playing = false;
-        }, 1000);
-    });
-    
-    // 发送用户弹幕（也添加节流）
-    createDanmaku(true);
+    // 弹幕节流控制，避免页面太乱
+    if (now - lastDanmakuTime >= danmakuThrottle) {
+        lastDanmakuTime = now;
+        createDanmaku(true);
+    }
 });
 
 // 背景图片切换
@@ -133,7 +137,7 @@ const bgImages = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'];
 
 function switchBackground() {
     currentBgIndex = (currentBgIndex + 1) % bgImages.length;
-    document.body.style.backgroundImage = `url('${bgImages[currentBgIndex]}')`;
+    document.body.style.backgroundImage = `url('assets/images/${bgImages[currentBgIndex]}')`;
 }
 
 // 每30秒切换一次背景
