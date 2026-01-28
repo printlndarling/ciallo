@@ -148,13 +148,13 @@ let clickCount = 0;
 let pageStartTime = Date.now();
 let specialAudioPlayed = false;
 
-// 检查是否应该播放特殊音频
+// 检查是否应该播放CG音频
 function checkSpecialAudio() {
     if (specialAudioPlayed) return false;
     
     const timeElapsed = (Date.now() - pageStartTime) / 1000 / 60; // 转换为分钟
     
-    if (clickCount >= 100 || timeElapsed >= 10) {
+    if (clickCount >= 10 || timeElapsed >= 10) {
         specialAudioPlayed = true;
         const specialAudio = document.getElementById('specialAudio');
         specialAudio.play().catch(err => {
